@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI Pro Chat - OpenRouter</title>
+    <title>AI Pro Chat - Image & History</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script>
@@ -36,10 +36,8 @@
             </button>
         </div>
         <div id="chat-history" class="flex-1 overflow-y-auto px-2 space-y-1"></div>
-        <div class="p-4 border-t border-gray-200 dark:border-slate-800">
-            <button onclick="openModal('settings-modal')" class="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg">
-                Settings
-            </button>
+        <div class="p-4 border-t border-gray-200 dark:border-slate-800 space-y-2">
+            <button onclick="openModal('settings-modal')" class="w-full flex items-center gap-3 px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-slate-800 rounded-lg">⚙️ Settings</button>
         </div>
     </aside>
 
@@ -49,7 +47,7 @@
         <header class="h-14 border-b border-gray-200 dark:border-slate-800 flex items-center justify-between px-4 bg-white/80 dark:bg-bg-dark/80 backdrop-blur-md sticky top-0 z-20">
             <div class="flex items-center gap-3">
                 <button onclick="toggleSidebar()" class="md:hidden p-2 text-gray-500">☰</button>
-                <h1 id="chat-title" class="font-semibold truncate max-w-[150px] md:max-w-md">AI Chat Board</h1>
+                <h1 id="chat-title" class="font-semibold truncate max-w-[150px] md:max-w-md">New Chat</h1>
             </div>
             <button onclick="toggleTheme()" id="theme-btn" class="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-slate-800">🌓</button>
         </header>
@@ -57,37 +55,31 @@
         <div id="chat-container" class="flex-1 overflow-y-auto p-4 md:p-6 space-y-6"></div>
 
         <div class="p-4 border-t border-gray-200 dark:border-slate-800 bg-white dark:bg-bg-dark">
-            <div class="max-w-3xl mx-auto relative flex items-end gap-2">
-                <textarea id="message-input" rows="1" placeholder="OpenRouter से कुछ भी पूछें..." class="w-full p-3 bg-gray-100 dark:bg-slate-800 border-none rounded-xl focus:ring-2 focus:ring-primary outline-none resize-none max-h-40"></textarea>
-                <button id="send-btn" onclick="handleSend()" class="p-3 bg-primary text-white rounded-xl hover:bg-primary-hover disabled:opacity-50">
-                    ➤
-                </button>
+            <div class="max-w-3xl mx-auto flex items-end gap-2">
+                <textarea id="message-input" rows="1" placeholder="पूछें या 'generate image of...' लिखें" class="w-full p-3 bg-gray-100 dark:bg-slate-800 border-none rounded-xl focus:ring-2 focus:ring-primary outline-none resize-none max-h-40 text-sm md:text-base"></textarea>
+                <button id="send-btn" onclick="handleSend()" class="p-3 bg-primary text-white rounded-xl hover:bg-primary-hover disabled:opacity-50">➤</button>
             </div>
+            <p class="text-[10px] text-center mt-2 text-gray-400">Image के लिए संदेश "generate image" से शुरू करें।</p>
         </div>
     </main>
 
     <div id="settings-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 modal-hidden transition-all duration-300">
         <div class="bg-white dark:bg-slate-900 rounded-2xl p-6 w-full max-w-md shadow-2xl border dark:border-slate-800 space-y-4">
-            <h3 class="text-xl font-bold">API Settings</h3>
+            <h3 class="text-xl font-bold">Settings</h3>
             <div>
                 <label class="block text-sm font-medium mb-1">OpenRouter API Key</label>
                 <input type="password" id="api-key-input" placeholder="sk-or-..." class="w-full p-2.5 bg-gray-100 dark:bg-slate-800 rounded-lg outline-none border dark:border-slate-700">
             </div>
             <div>
-                <label class="block text-sm font-medium mb-1">Model</label>
-                <select id="model-select" class="w-full p-2.5 bg-gray-100 dark:bg-slate-800 rounded-lg outline-none border dark:border-slate-700">
-                    <optgroup label="Google">
-                        <option value="google/gemini-pro-1.5">Gemini Pro 1.5</option>
-                        <option value="google/gemini-flash-1.5">Gemini Flash 1.5</option>
-                    </optgroup>
-                    <optgroup label="OpenAI">
-                        <option value="openai/gpt-4o">GPT-4o</option>
-                        <option value="openai/gpt-3.5-turbo">GPT-3.5 Turbo</option>
-                    </optgroup>
-                    <optgroup label="Meta">
-                        <option value="meta-llama/llama-3-70b-instruct">Llama 3 70B</option>
-                    </optgroup>
+                <label class="block text-sm font-medium mb-1">Chat Model</label>
+                <select id="model-select" class="w-full p-2.5 bg-gray-100 dark:bg-slate-800 rounded-lg border dark:border-slate-700">
+                    <option value="google/gemini-flash-1.5">Gemini Flash 1.5 (Fast)</option>
+                    <option value="openai/gpt-4o-mini">GPT-4o Mini</option>
+                    <option value="meta-llama/llama-3.1-8b-instruct">Llama 3.1 8B</option>
                 </select>
+            </div>
+            <div class="pt-2">
+                <button onclick="clearAllHistory()" class="w-full py-2 text-sm text-red-500 border border-red-500 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/20">Clear All Chat History</button>
             </div>
             <div class="flex justify-end gap-3 pt-2">
                 <button onclick="closeModal('settings-modal')" class="px-4 py-2">Cancel</button>
@@ -104,47 +96,28 @@
         function init() {
             applyTheme();
             renderChatHistory();
-            if (currentChatId) loadChat(currentChatId);
-            else createNewChat();
-            
-            document.getElementById('message-input').addEventListener('input', function() {
-                this.style.height = 'auto';
-                this.style.height = (this.scrollHeight) + 'px';
-            });
-        }
-
-        async function fetchAIResponse(userMessage, history) {
-            if (!settings.apiKey) return "Error: Please add OpenRouter API Key in Settings.";
-            
-            const msgs = history.map(m => ({ role: m.role, content: m.content }));
-            msgs.push({ role: "user", content: userMessage });
-
-            try {
-                const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-                    method: "POST",
-                    headers: {
-                        "Authorization": `Bearer ${settings.apiKey}`,
-                        "Content-Type": "application/json",
-                        "X-Title": "My AI App"
-                    },
-                    body: JSON.stringify({ model: settings.model, messages: msgs })
-                });
-                const data = await res.json();
-                return data.choices?.[0]?.message?.content || data.error?.message || "Unknown error";
-            } catch (e) { return "Network Error!"; }
+            if (currentChatId && chats.find(c => c.id === currentChatId)) {
+                loadChat(currentChatId);
+            } else if (chats.length > 0) {
+                loadChat(chats[0].id);
+            } else {
+                createNewChat();
+            }
         }
 
         async function handleSend() {
             const input = document.getElementById('message-input');
             const text = input.value.trim();
-            if (!text) return;
+            if (!text || !settings.apiKey) {
+                if(!settings.apiKey) alert("Please add API Key in Settings");
+                return;
+            }
 
             const chat = chats.find(c => c.id === currentChatId);
-            chat.messages.push({ role: 'user', content: text });
-            if (chat.title === 'New Chat') chat.title = text.substring(0, 30);
+            chat.messages.push({ role: 'user', content: text, type: 'text' });
+            if (chat.title === 'New Chat') chat.title = text.substring(0, 25);
 
             input.value = '';
-            input.style.height = 'auto';
             saveAndRender();
             renderMessages(chat.messages);
 
@@ -152,20 +125,98 @@
             btn.disabled = true;
             const loading = showLoading();
 
-            const aiRes = await fetchAIResponse(text, chat.messages.slice(0, -1));
-            loading.remove();
-            
-            chat.messages.push({ role: 'assistant', content: aiRes });
+            try {
+                let aiResponse;
+                // Image Generation Logic
+                if (text.toLowerCase().startsWith("generate image") || text.toLowerCase().startsWith("create image")) {
+                    aiResponse = await fetchImage(text);
+                } else {
+                    aiResponse = await fetchText(text, chat.messages);
+                }
+                
+                loading.remove();
+                chat.messages.push(aiResponse);
+            } catch (e) {
+                loading.remove();
+                chat.messages.push({ role: 'assistant', content: "Error: " + e.message, type: 'text' });
+            }
+
             saveAndRender();
             renderMessages(chat.messages);
             btn.disabled = false;
         }
 
+        async function fetchText(prompt, history) {
+            const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${settings.apiKey}`, "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    model: settings.model,
+                    messages: history.map(m => ({ role: m.role, content: m.content }))
+                })
+            });
+            const data = await res.json();
+            return { role: 'assistant', content: data.choices[0].message.content, type: 'text' };
+        }
+
+        async function fetchImage(prompt) {
+            // OpenRouter image model (DALL-E 3)
+            const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${settings.apiKey}`, "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    model: "openai/dall-e-3",
+                    messages: [{ role: "user", content: prompt }]
+                })
+            });
+            const data = await res.json();
+            // OpenRouter usually returns URL in the content or choices
+            const content = data.choices[0].message.content;
+            if (content.includes("http")) {
+                const url = content.match(/\((https?:\/\/[^\s)]+)\)/)?.[1] || content.match(/https?:\/\/[^\s]+/)?.[0];
+                return { role: 'assistant', content: url, type: 'image' };
+            }
+            return { role: 'assistant', content: content, type: 'text' };
+        }
+
+        function renderMessages(messages) {
+            const container = document.getElementById('chat-container');
+            container.innerHTML = messages.map(m => `
+                <div class="flex ${m.role === 'user' ? 'justify-end' : 'justify-start'} animate-slide-up">
+                    <div class="max-w-[90%] md:max-w-[75%] p-3 rounded-2xl shadow-sm ${m.role === 'user' ? 'bg-primary text-white rounded-tr-none' : 'bg-white dark:bg-slate-800 border dark:border-slate-700 rounded-tl-none'}">
+                        ${m.type === 'image' ? 
+                            `<img src="${m.content}" class="rounded-lg max-w-full h-auto cursor-pointer" onclick="window.open('${m.content}')" alt="AI Generated">` : 
+                            `<p class="text-sm md:text-base whitespace-pre-wrap">${m.content}</p>`
+                        }
+                    </div>
+                </div>
+            `).join('');
+            container.scrollTop = container.scrollHeight;
+        }
+
         function createNewChat() {
             const id = Date.now().toString();
             chats.unshift({ id, title: 'New Chat', messages: [] });
-            loadChat(id);
+            currentChatId = id;
             saveAndRender();
+            loadChat(id);
+        }
+
+        function deleteChat(id, e) {
+            e.stopPropagation();
+            chats = chats.filter(c => c.id !== id);
+            if (currentChatId === id) currentChatId = chats.length > 0 ? chats[0].id : null;
+            saveAndRender();
+            if (currentChatId) loadChat(currentChatId);
+            else createNewChat();
+        }
+
+        function clearAllHistory() {
+            if (confirm("Delete all chats?")) {
+                chats = [];
+                createNewChat();
+                closeModal('settings-modal');
+            }
         }
 
         function loadChat(id) {
@@ -177,33 +228,14 @@
             renderChatHistory();
         }
 
-        function renderMessages(messages) {
-            const container = document.getElementById('chat-container');
-            container.innerHTML = messages.map(m => `
-                <div class="flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}">
-                    <div class="max-w-[85%] p-3 rounded-2xl ${m.role === 'user' ? 'bg-primary text-white rounded-tr-none' : 'bg-white dark:bg-slate-800 border dark:border-slate-700 rounded-tl-none'}">
-                        ${m.content.replace(/\n/g, '<br>')}
-                    </div>
-                </div>
-            `).join('');
-            container.scrollTop = container.scrollHeight;
-        }
-
         function renderChatHistory() {
             const hist = document.getElementById('chat-history');
             hist.innerHTML = chats.map(c => `
-                <div onclick="loadChat('${c.id}')" class="p-2.5 rounded-lg cursor-pointer truncate text-sm ${c.id === currentChatId ? 'bg-gray-200 dark:bg-slate-800' : 'hover:bg-gray-100 dark:hover:bg-slate-800/50'}">
-                    ${c.title}
+                <div onclick="loadChat('${c.id}')" class="group flex items-center justify-between p-2.5 rounded-lg cursor-pointer transition-all ${c.id === currentChatId ? 'bg-gray-200 dark:bg-slate-800' : 'hover:bg-gray-100 dark:hover:bg-slate-800/50'}">
+                    <span class="truncate text-sm flex-1">${c.title}</span>
+                    <button onclick="deleteChat('${c.id}', event)" class="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-red-500">🗑️</button>
                 </div>
             `).join('');
-        }
-
-        function showLoading() {
-            const div = document.createElement('div');
-            div.className = "flex justify-start p-3";
-            div.innerHTML = `<div class="flex gap-1 bg-white dark:bg-slate-800 p-3 rounded-lg"><div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div><div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div><div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div></div>`;
-            document.getElementById('chat-container').appendChild(div);
-            return div;
         }
 
         function saveAndRender() {
@@ -211,34 +243,25 @@
             renderChatHistory();
         }
 
-        function toggleTheme() {
-            settings.theme = settings.theme === 'dark' ? 'light' : 'dark';
-            saveSettings();
-            applyTheme();
+        function showLoading() {
+            const div = document.createElement('div');
+            div.className = "flex justify-start p-3";
+            div.innerHTML = `<div class="bg-white dark:bg-slate-800 p-3 rounded-lg flex gap-1"><div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div><div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div><div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div></div>`;
+            document.getElementById('chat-container').appendChild(div);
+            return div;
         }
 
-        function applyTheme() {
-            document.documentElement.className = settings.theme;
-        }
-
-        function openModal(id) {
-            document.getElementById('api-key-input').value = settings.apiKey;
-            document.getElementById('model-select').value = settings.model;
-            document.getElementById(id).classList.remove('modal-hidden');
-        }
-
-        function closeModal(id) { document.getElementById(id).classList.add('modal-hidden'); }
-
+        function applyTheme() { document.documentElement.className = settings.theme; }
+        function toggleTheme() { settings.theme = settings.theme === 'dark' ? 'light' : 'dark'; saveSettings(); applyTheme(); }
+        function openModal(id) { document.getElementById(id).classList.remove('modal-hidden'); document.getElementById(id).classList.add('modal-active'); }
+        function closeModal(id) { document.getElementById(id).classList.add('modal-hidden'); document.getElementById(id).classList.remove('modal-active'); }
+        function toggleSidebar() { document.getElementById('sidebar').classList.toggle('-translate-x-full'); document.getElementById('sidebar-overlay').classList.toggle('hidden'); }
+        
         function saveSettings() {
             settings.apiKey = document.getElementById('api-key-input').value;
             settings.model = document.getElementById('model-select').value;
             localStorage.setItem('settings', JSON.stringify(settings));
             closeModal('settings-modal');
-        }
-
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('-translate-x-full');
-            document.getElementById('sidebar-overlay').classList.toggle('hidden');
         }
 
         window.onload = init;
